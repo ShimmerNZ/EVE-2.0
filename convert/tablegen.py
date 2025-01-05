@@ -18,6 +18,7 @@ import sys
 import math
 from PIL import Image
 from hextable import HexTable
+encoding='cp1252'
 
 # OPEN AND VALIDATE SCLERA IMAGE FILE --------------------------------------
 

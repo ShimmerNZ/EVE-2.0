@@ -1,1 +1,3 @@
-python tablegen.py EveEye/sclera.png EveEye/iris.png EveEye/lid-upper-symmetrical.png EveEye/lid-lower-symmetrical.png EveEye/lid-upper.png EveEye/lid-lower.png 80 > EveEye.h
+python tablegen.py EveEye/sclera.png EveEye/iris.png EveEye/lid-upper-symmetrical.png EveEye/lid-lower-symmetrical.png EveEye/lid-upper.png EveEye/lid-lower.png 80 > ..\EveTeensy\Eve\graphics\EveEye.h
+
+set to ANSI encoding if compile errors

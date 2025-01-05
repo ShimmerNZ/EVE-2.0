@@ -1,0 +1,117 @@
+
+### Sequence subroutines: ###
+
+# Sequence 0
+sub Sequence_0
+  500 8000 8384 3712 5984 0 0 frame_0..5 # Frame 1
+  500 3968 4907 frame_1_3 # Frame 2
+  500 8000 7001 frame_2_3 # Frame 3
+  500 5984 frame_3 # Frame 4
+  500 8384 3712 frame_1_2 # Frame 5
+  500 3200 frame_0 # Frame 6
+  500 0 0 0 0 frame_0..3 # Frame 7
+  quit
+# Sequence 1
+sub Sequence_1
+  500 8000 0 0 0 0 0 frame_0..5 # Frame 0
+  500 0 8000 frame_0_2 # Frame 1
+  200 6896 frame_2 # Frame 2
+  200 8000 frame_2 # Frame 3
+  200 6917 frame_2 # Frame 4
+  500 8000 frame_2 # Frame 5
+  500 3712 frame_2 # Frame 6
+  500 3200 frame_0 # Frame 7
+  quit
+# Sequence 2
+sub Sequence_2
+  700 0 0 0 3968 0 0 frame_0..5 # Frame 0
+  1200 8000 frame_3 # Frame 1
+  1200 3968 frame_3 # Frame 2
+  1200 8000 frame_3 # Frame 3
+  700 6023 frame_3 # Frame 4
+  quit
+# Sequence 3
+sub Sequence_3
+  500 8000 0 0 0 0 0 frame_0..5 # Frame 0
+  400 3968 8000 frame_1_3 # Frame 1
+  400 8384 8000 frame_1_2 # Frame 2
+  400 3968 3712 frame_1_2 # Frame 3
+  400 8384 8000 3968 frame_1..3 # Frame 4
+  400 3968 3712 frame_1_2 # Frame 6
+  400 8384 8000 frame_1_2 # Frame 7
+  400 6003 frame_3 # Frame 8
+  500 3712 frame_2 # Frame 9
+  500 3200 frame_0 # Frame 10
+  quit
+# Sequence 4
+sub Sequence_4
+  500 8000 0 0 0 0 0 frame_0..5 # Frame 0
+  500 3968 3968 frame_1_3 # Frame 1
+  500 delay # Frame 2
+  500 8384 6081 frame_1_3 # Frame 3
+  500 3200 frame_0 # Frame 4
+  quit
+
+sub frame_0..5
+  5 servo
+  4 servo
+  3 servo
+  2 servo
+  1 servo
+  0 servo
+  delay
+  return
+
+sub frame_1_3
+  3 servo
+  1 servo
+  delay
+  return
+
+sub frame_2_3
+  3 servo
+  2 servo
+  delay
+  return
+
+sub frame_3
+  3 servo
+  delay
+  return
+
+sub frame_1_2
+  2 servo
+  1 servo
+  delay
+  return
+
+sub frame_0
+  0 servo
+  delay
+  return
+
+sub frame_0..3
+  3 servo
+  2 servo
+  1 servo
+  0 servo
+  delay
+  return
+
+sub frame_0_2
+  2 servo
+  0 servo
+  delay
+  return
+
+sub frame_2
+  2 servo
+  delay
+  return
+
+sub frame_1..3
+  3 servo
+  2 servo
+  1 servo
+  delay
+  return
