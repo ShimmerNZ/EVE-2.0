@@ -24,7 +24,8 @@ sub Sequence_1
   quit
 # Sequence 2
 sub Sequence_2
-  700 0 0 0 3968 0 0 frame_0..5 # Frame 0
+  700 0 0 0 5964 0 0 frame_0..5 # Frame 5
+  700 3968 frame_3 # Frame 0
   1200 8000 frame_3 # Frame 1
   1200 3968 frame_3 # Frame 2
   1200 8000 frame_3 # Frame 3
@@ -32,8 +33,8 @@ sub Sequence_2
   quit
 # Sequence 3
 sub Sequence_3
-  500 8000 0 0 0 0 0 frame_0..5 # Frame 0
-  400 3968 8000 frame_1_3 # Frame 1
+  500 8000 0 0 8000 0 0 frame_0..5 # Frame 0
+  400 3968 frame_1 # Frame 1
   400 8384 8000 frame_1_2 # Frame 2
   400 3968 3712 frame_1_2 # Frame 3
   400 8384 8000 3968 frame_1..3 # Frame 4
@@ -45,11 +46,16 @@ sub Sequence_3
   quit
 # Sequence 4
 sub Sequence_4
-  500 8000 0 0 0 0 0 frame_0..5 # Frame 0
+  500 8000 0 0 5964 0 0 frame_0..5 # Frame 0
   500 3968 3968 frame_1_3 # Frame 1
   500 delay # Frame 2
   500 8384 6081 frame_1_3 # Frame 3
   500 3200 frame_0 # Frame 4
+  500 0 0 6962 frame_0_1_3 # Frame 5
+  500 5964 frame_3 # Frame 6
+  500 5612 frame_3 # Frame 7
+  500 6414 frame_3 # Frame 8
+  500 5964 frame_3 # Frame 9
   quit
 
 sub frame_0..5
@@ -109,9 +115,21 @@ sub frame_2
   delay
   return
 
+sub frame_1
+  1 servo
+  delay
+  return
+
 sub frame_1..3
   3 servo
   2 servo
   1 servo
+  delay
+  return
+
+sub frame_0_1_3
+  3 servo
+  1 servo
+  0 servo
   delay
   return

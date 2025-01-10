@@ -137,24 +137,13 @@ void wireCallback(int n) {
 bool receiver = false;
 #endif // SYNCPIN
 
-int ledPin1 = 13;
-int ledPin2 =12;
-int ledPin3 =1;
-int ledPin4 =0;
-float sinVal;
-int ledVal;
-int lightx=0;
+
 
 // INITIALIZATION -- runs once at startup ----------------------------------
 
 void setup(void) {
   uint8_t e; // Eye index, 0 to NUM_EYES-1
-  delay(2000);
-  pinMode(ledPin1, OUTPUT);
-  pinMode(ledPin2, OUTPUT);
-  pinMode(ledPin3, OUTPUT);
-  pinMode(ledPin4, OUTPUT);
-  CallLights();
+
 
 #if defined(SYNCPIN) && (SYNCPIN >= 0) // If using I2C sync...
   pinMode(SYNCPIN, INPUT_PULLUP);      // Check for jumper to ground
@@ -786,17 +775,7 @@ void split( // Subdivides motion path into two sub-paths w/randimization
 // MAIN LOOP -- runs continuously after setup() ----------------------------
 
 void loop() {
-      // convert degrees to radians then obtain sin value
-      sinVal = (sin(lightx*(3.1412/180)));
-      ledVal = int(sinVal*255);
-      analogWrite(ledPin4, ledVal);
-      if (lightx<180){
-        lightx=lightx+1;
-      }
-      else {
-        lightx=0;
-      }
-      //delay(25);
+
 #if defined(LIGHT_PIN) && (LIGHT_PIN >= 0) // Interactive iris
 
   int16_t v = analogRead(LIGHT_PIN);       // Raw dial/photocell reading
@@ -830,33 +809,4 @@ void loop() {
 
 }
 
-void CallLights()
-{
-  for (int x=0; x<180; x++) {
-    // convert degrees to radians then obtain sin value
-    sinVal = (sin(x*(3.1412/180)));
-    ledVal = int(sinVal*255);
-    analogWrite(ledPin1,ledVal);
-    delay(3);
-    }
- // analogWrite(ledPin1,0);
-  for (int x=0; x<180; x++) {
-    // convert degrees to radians then obtain sin value
-    sinVal = (sin(x*(3.1412/180)));
-    ledVal = int(sinVal*255);
-    analogWrite(ledPin2,ledVal);
-    delay(3);
-    }
- // analogWrite(ledPin2,0);
-  for (int x=0; x<180; x++) {
-    // convert degrees to radians then obtain sin value
-    sinVal = (sin(x*(3.1412/180)));
-    ledVal = int(sinVal*255);
-    analogWrite(ledPin3,ledVal);
-    delay(3);
-    }
-  analogWrite(ledPin1,0);
-  analogWrite(ledPin2,0);
-  analogWrite(ledPin3,0);
 
-}

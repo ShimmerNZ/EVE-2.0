@@ -1,3 +1,5 @@
+//Written by Mike Owen for the Eve Animatronic project. MIT License.
+
 #include <Adafruit_NeoPixel.h>
 #include <SoftwareSerial.h>
 #include <PololuMaestro.h>
@@ -10,6 +12,8 @@
 #define NUM_LEDS2 12
 #define METEOR_SIZE 10
 #define METEOR_TRAIL_DECAY 64
+#define FADE_DURATION 4000 // 4 seconds
+#define INTERVAL 5 // Interval for updates
 
 class Mp3Notify;
 SoftwareSerial secondarySerial(9, 8); // RX, TX
@@ -68,6 +72,9 @@ Adafruit_NeoPixel strip2 = Adafruit_NeoPixel(NUM_LEDS2, LED_PIN2, NEO_GRB + NEO_
 SoftwareSerial maestroSerial(10, 11); // RX, TX pins for Pololu Maestro
 MicroMaestro maestro(maestroSerial);
 
+unsigned long startMillis;
+uint8_t brightness = 0;
+bool fadingIn = true;
 unsigned long previousMillis = 0;
 unsigned long chasePreviousMillis = 0;
 const long interval = 30; // Interval at which to update the meteor effect (milliseconds)
@@ -94,9 +101,47 @@ void setup() {
   Serial.print("volume ");
   Serial.println(volume);
   randomSeed(analogRead(0)); // Make Random more random
-  uint16_t count = dfmp3.getTotalTrackCount(DfMp3_PlaySource_Sd);
+  int count = dfmp3.getTotalTrackCount(DfMp3_PlaySource_Sd);
+  while (count==0) {
+    pulseRed(strip1, 2000);
+    count = dfmp3.getTotalTrackCount(DfMp3_PlaySource_Sd);
+    Serial.println("No files detected");
+  }
   Serial.print("files ");
   Serial.println(count);
+   // intial light pattern on start up
+  startMillis = millis();
+  while (millis() - startMillis < FADE_DURATION) {
+    unsigned long currentMillis = millis();
+    
+    if (fadingIn) {
+      if (currentMillis - previousMillis >= INTERVAL) {
+        previousMillis = currentMillis;
+        
+        // Update brightness
+        brightness = map(currentMillis - startMillis, 0, FADE_DURATION / 2, 0, 255);
+        updateChasingRainbow(strip1, brightness, currentMillis / INTERVAL);
+      }
+    } else {
+      if (currentMillis - previousMillis >= INTERVAL) {
+        previousMillis = currentMillis;
+        
+        // Update brightness
+        brightness = map(currentMillis - startMillis, FADE_DURATION / 2, FADE_DURATION, 255, 0);
+        updateChasingRainbow(strip1, brightness, currentMillis / INTERVAL);
+      }
+    }
+
+    // Switch to fading out after fading in is done
+    if (currentMillis - startMillis >= FADE_DURATION / 2) {
+      fadingIn = false;
+      //startMillis = millis(); // Reset the startMillis to transition to fading out
+    }
+  }
+
+  // Turn off all LEDs after the effect
+  strip1.clear();
+  strip1.show();
 }
 
 void loop() {
@@ -108,7 +153,7 @@ void loop() {
     // Play a random MP3 track from 1 to 10 
     int randomTrack = random(0, 9);
     dfmp3.playMp3FolderTrack(randomTrack);
-    Serial.println("looping");
+    Serial.println(randomScript);
   }
 
   if (isRunning) {
@@ -194,3 +239,82 @@ void waitMilliseconds(uint16_t msWait) {
     delay(1);
   }
 }
+
+void updateChasingRainbow(Adafruit_NeoPixel &strip, uint8_t brightness, uint16_t index) {
+  for (int i = 0; i < strip.numPixels(); i++) {
+    int pixelIndex = (i + index) & 255;
+    uint32_t color = Wheel(pixelIndex & 255);
+    strip.setPixelColor(i, dimColor(color, brightness));
+  }
+  strip.show();
+}
+
+uint32_t Wheel(byte WheelPos) {
+  WheelPos = 255 - WheelPos;
+  if (WheelPos < 85) {
+    return strip1.Color(255 - WheelPos * 3, 0, WheelPos * 3);
+  }
+  if (WheelPos < 170) {
+    WheelPos -= 85;
+    return strip1.Color(0, WheelPos * 3, 255 - WheelPos * 3);
+  }
+  WheelPos -= 170;
+  return strip1.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
+}
+
+uint32_t dimColor(uint32_t color, uint8_t brightness) {
+  uint8_t r = (color >> 16) & 0xFF;
+  uint8_t g = (color >> 8) & 0xFF;
+  uint8_t b = color & 0xFF;
+  r = (r * brightness) / 255;
+  g = (g * brightness) / 255;
+  b = (b * brightness) / 255;
+  return strip1.Color(r, g, b);
+}
+
+void pulseRed(Adafruit_NeoPixel &strip, unsigned long duration) {
+  unsigned long startMillis = millis();
+  unsigned long previousMillis = 0;
+  const long interval = 30; // Interval for updates
+  uint8_t brightness = 0;
+  bool fadingIn = true;
+  
+  while (millis() - startMillis < duration) {
+    unsigned long currentMillis = millis();
+    
+    if (fadingIn) {
+      if (currentMillis - previousMillis >= interval) {
+        previousMillis = currentMillis;
+        
+        // Update brightness
+        brightness = map(currentMillis - startMillis, 0, duration / 2, 0, 255);
+        setAllRed(strip, brightness);
+      }
+    } else {
+      if (currentMillis - previousMillis >= interval) {
+        previousMillis = currentMillis;
+        
+        // Update brightness
+        brightness = map(currentMillis - startMillis, duration / 2, duration, 255, 0);
+        setAllRed(strip, brightness);
+      }
+    }
+
+    // Switch to fading out after fading in is done
+    if (currentMillis - startMillis >= duration / 2) {
+      fadingIn = false;
+    }
+  }
+
+  // Turn off all LEDs after the effect
+  strip.clear();
+  strip.show();
+}
+
+void setAllRed(Adafruit_NeoPixel &strip, uint8_t brightness) {
+  for (int i = 0; i < strip.numPixels(); i++) {
+    strip.setPixelColor(i, strip.Color(brightness, 0, 0)); // Red color
+  }
+  strip.show();
+}
+
