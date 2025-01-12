@@ -5,3 +5,6 @@ This project contains the updated files for the redesign of EVE. The original pr
 A full Instruction file has been provided.
 
 ![EVE](https://github.com/user-attachments/assets/5a3365a9-b6ad-4f43-acfd-6d6705b3a1ca)
+
+Find clips here:
+https://www.youtube.com/@MikeOwenNZ
